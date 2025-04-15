@@ -21,6 +21,7 @@
             --accent-red: #C1121F;
             --accent-gold: #F4A261;
             --text-light: #F8F9FA;
+            --correct-green: #2A9D8F;
         }
         
         body {
@@ -172,6 +173,19 @@
             transition: width 0.3s;
         }
         
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+        
         .question-card {
             background-color: rgba(44, 44, 44, 0.7);
             border-left: 5px solid var(--accent-gold);
@@ -216,6 +230,22 @@
             color: white;
         }
         
+        .option.correct {
+            background-color: var(--correct-green);
+            color: white;
+        }
+        
+        .feedback {
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        
+        .correct-feedback {
+            color: var(--correct-green);
+        }
+        
         .quiz-footer {
             display: flex;
             justify-content: space-between;
@@ -226,6 +256,45 @@
         .score-display {
             font-size: 1.2rem;
             font-weight: bold;
+        }
+        
+        /* Leaderboard Section */
+        .leaderboard-container {
+            background-color: rgba(44, 44, 44, 0.7);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .leaderboard-table th, 
+        .leaderboard-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--camouflage-green);
+        }
+        
+        .leaderboard-table th {
+            background-color: var(--camouflage-green);
+            color: white;
+        }
+        
+        .leaderboard-table tr:nth-child(even) {
+            background-color: rgba(74, 93, 35, 0.3);
+        }
+        
+        .leaderboard-table tr:hover {
+            background-color: rgba(108, 84, 16, 0.5);
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: var(--accent-gold);
         }
         
         /* Footer */
@@ -260,6 +329,41 @@
         .social-links a:hover {
             color: var(--accent-gold);
         }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .modal-content {
+            background-color: var(--camouflage-dark);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .close-modal {
+            color: var(--accent-gold);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-red);
+        }
     </style>
 </head>
 <body>
@@ -291,26 +395,46 @@
                     <div class="quiz-progress">
                         <div class="progress-bar" id="progressBar"></div>
                     </div>
-                    <h3 id="questionCounter">Câu hỏi 1/5</h3>
+                    <h3 id="questionCounter">Câu hỏi 1/12</h3>
+                    <div class="timer-container">
+                        <div class="timer">Thời gian: <span id="time">15</span> giây</div>
+                    </div>
                 </div>
                 
                 <div class="question-card">
                     <div class="question-text" id="questionText">
-                        Chiến dịch Điện Biên Phủ diễn ra vào năm nào?
+                        Kết quả chiến dịch Điện Biên Phủ 12 ngày đêm, Việt Nam ta đã bắn rơi bao nhiêu chiếc máy bay?
                     </div>
                     
                     <div class="options" id="optionsContainer">
-                        <div class="option" onclick="selectOption(this)">A. 1954</div>
-                        <div class="option" onclick="selectOption(this)">B. 1945</div>
-                        <div class="option" onclick="selectOption(this)">C. 1968</div>
-                        <div class="option" onclick="selectOption(this)">D. 1975</div>
+                        <!-- Options will be inserted by JavaScript -->
                     </div>
+                    
+                    <div class="feedback" id="feedback"></div>
                 </div>
                 
                 <div class="quiz-footer">
                     <div class="score-display" id="scoreDisplay">Điểm: 0</div>
                     <button class="btn" id="nextButton" onclick="nextQuestion()">Câu Tiếp Theo</button>
                 </div>
+            </div>
+            
+            <!-- Leaderboard -->
+            <div class="leaderboard-container">
+                <h3>Bảng Xếp Hạng</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Hạng</th>
+                            <th>Tên</th>
+                            <th>Điểm</th>
+                            <th>Thời Gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be inserted by JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </section>
         
@@ -325,6 +449,17 @@
         </section>
     </main>
     
+    <!-- Name Input Modal -->
+    <div id="nameModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>Nhập Tên Của Bạn</h3>
+            <p>Để tham gia bảng xếp hạng, vui lòng nhập tên của bạn:</p>
+            <input type="text" id="playerName" placeholder="Tên của bạn" style="width: 100%; padding: 0.5rem; margin: 1rem 0;">
+            <button class="btn" onclick="savePlayerName()">Lưu Tên</button>
+        </div>
+    </div>
+    
     <footer>
         <div class="footer-content">
             <ul class="social-links">
@@ -338,6 +473,7 @@
     </footer>
     
     <script>
+        // Dữ liệu câu hỏi
         const questions = [
             {
                 question: "Kết quả chiến dịch Điện Biên Phủ 12 ngày đêm, Việt Nam ta đã bắn rơi bao nhiêu chiếc máy bay?",
@@ -350,12 +486,12 @@
                 correctAnswer: 1
             },
             {
-                question: "Vào ngày đêm 18/12/1972, Ai đã là người trở thành “Tên lửa thứ 3” để bắn vào pháo đài bay B52 của địch?",
+                question: "Vào ngày đêm 18/12/1972, Ai đã là người trở thành 'Tên lửa thứ 3' để bắn vào pháo đài bay B52 của địch?",
                 options: ["A. Vũ Xuân Thiều", "B. Hoàng Tam Hùng", "C. Phạm Tuân", "D. Hồ Thanh Phong"],
                 correctAnswer: 0
             },
             {
-                question: "Chiến dịch “Điện Biên Phủ trên không” diễn ra vào thời gian nào?",
+                question: "Chiến dịch 'Điện Biên Phủ trên không' diễn ra vào thời gian nào?",
                 options: ["A. Tháng 3 năm 1975", "B. Tháng 12 năm 1972", "C. Tháng 5 năm 1954", "D. Tháng 1 năm 1968"],
                 correctAnswer: 1
             },
@@ -365,7 +501,7 @@
                 correctAnswer: 3
             },
             {
-                question: "Kết quả lớn nhất của Chiến dịch “Điện Biên Phủ trên không” là gì?",
+                question: "Kết quả lớn nhất của Chiến dịch 'Điện Biên Phủ trên không' là gì?",
                 options: ["A. Làm suy yếu lực lượng hải quân Mỹ", "B. Làm thay đổi chiến lược chiến tranh của Mỹ ở miền Nam", "C. Buộc Mỹ phải ký Hiệp định Paris chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam", "D. Mở rộng vùng giải phóng ở miền Nam"],
                 correctAnswer: 2
             },
@@ -381,11 +517,11 @@
             },
             {
                 question: "Nội dung nào sau đây không phản ánh đúng về nguyên tắc tổ chức, hoạt động phòng không nhân dân?",
-                options: ["A. Do hệ thống chính trị, toàn dân và lực lượng vũ trang thực hiện", "B. Được tổ chức và điều hành tập trung thống nhất từ trung ương đến địa phương", "C. Đặt dưới sự lãnh đạo của Đảng; theo sự chỉ huy và hướng dẫn của Bộ Công an", "D.  Chuẩn bị từ thời bình và triển khai khi có biểu hiện, hành động xâm nhập của địch"],
+                options: ["A. Do hệ thống chính trị, toàn dân và lực lượng vũ trang thực hiện", "B. Được tổ chức và điều hành tập trung thống nhất từ trung ương đến địa phương", "C. Đặt dưới sự lãnh đạo của Đảng; theo sự chỉ huy và hướng dẫn của Bộ Công an", "D. Chuẩn bị từ thời bình và triển khai khi có biểu hiện, hành động xâm nhập của địch"],
                 correctAnswer: 2
             },
             {
-                question: "Ai là người đã tiên đoán: Sớm muộn rồi đế quốc Mỹ cũng đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua... Phải dự kiến trước mọi tình huống càng sớm - càng tốt, để có thời gian suy nghĩ chuẩn bị. Nhớ là trước khi thua ở Triều Tiên, đế quốc Mỹ đã hủy diệt Bình Nhưỡng, ở Việt Nam, Mỹ sẽ nhất định thua. Nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội",
+                question: "Ai là người đã tiên đoán: 'Sớm muộn rồi đế quốc Mỹ cũng đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua... Phải dự kiến trước mọi tình huống càng sớm - càng tốt, để có thời gian suy nghĩ chuẩn bị. Nhớ là trước khi thua ở Triều Tiên, đế quốc Mỹ đã hủy diệt Bình Nhưỡng, ở Việt Nam, Mỹ sẽ nhất định thua. Nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội'",
                 options: ["A. Chủ tịch Hồ Chí Minh", "B. Đại tướng Võ Nguyên Giáp", "C. Đồng chí Phùng Thế Tài", "D. Trung tướng Lê Văn Tri"],
                 correctAnswer: 0
             },
@@ -397,15 +533,60 @@
             {
                 question: "Tên của tên lửa phòng không được viện trợ cho Việt Nam là?",
                 options: ["A. Sam", "B. Sam-2", "C. Sam-3", "D. Sam-3"],
-                correctAnswer: 2
+                correctAnswer: 1
             }
         ];
+        
+        // Biến toàn cục
         let currentQuestion = 0;
         let score = 0;
         let selectedOption = null;
+        let timeLeft = 15;
+        let timer;
+        let totalTime = 0;
+        let playerName = "";
+        let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        
+        // Khởi tạo quiz khi trang được tải
+        window.onload = function() {
+            updateQuestion();
+            checkPlayerName();
+        };
+        
+        // Kiểm tra xem người chơi đã có tên chưa
+        function checkPlayerName() {
+            const savedName = localStorage.getItem('quizPlayerName');
+            if (!savedName) {
+                document.getElementById('nameModal').style.display = 'block';
+            } else {
+                playerName = savedName;
+            }
+        }
+        
+        // Đóng modal
+        function closeModal() {
+            document.getElementById('nameModal').style.display = 'none';
+        }
+        
+        // Lưu tên người chơi
+        function savePlayerName() {
+            const nameInput = document.getElementById('playerName').value.trim();
+            if (nameInput) {
+                playerName = nameInput;
+                localStorage.setItem('quizPlayerName', playerName);
+                closeModal();
+            } else {
+                alert('Vui lòng nhập tên của bạn!');
+            }
+        }
+        
+        // Cập nhật câu hỏi hiện tại
         function updateQuestion() {
+            clearInterval(timer); // Dừng bộ đếm thời gian trước đó
+            
             const question = questions[currentQuestion];
-            document.getElementById('questionText').textContent = question.question;    
+            document.getElementById('questionText').textContent = question.question;
+            
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
             
@@ -424,50 +605,159 @@
             const progress = ((currentQuestion) / questions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
             
-            // Reset lựa chọn
+            // Reset lựa chọn và feedback
             selectedOption = null;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Reset và bắt đầu bộ đếm thời gian
+            timeLeft = 15;
+            document.getElementById('time').textContent = timeLeft;
+            startTimer();
+        }
+        
+        // Bắt đầu bộ đếm thời gian
+        function startTimer() {
+            timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeOut();
+                }
+            }, 1000);
+        }
+        
+        // Hết thời gian
+        function timeOut() {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = 'Hết thời gian! Câu hỏi tiếp theo...';
+            feedback.className = 'feedback';
+            
+            setTimeout(function() {
+                nextQuestion();
+            }, 1500);
         }
         
         // Chọn đáp án
         function selectOption(element, index) {
+            // Dừng bộ đếm thời gian
+            clearInterval(timer);
+            
             // Bỏ chọn tất cả các option khác
             const options = document.querySelectorAll('.option');
-            options.forEach(opt => opt.classList.remove('selected'));
+            options.forEach(opt => opt.classList.remove('selected', 'correct'));
             
             // Chọn option hiện tại
             element.classList.add('selected');
             selectedOption = index;
+            
+            // Kiểm tra đáp án
+            const question = questions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            
+            if (index === question.correctAnswer) {
+                element.classList.add('correct');
+                feedback.textContent = 'Đúng! +1 điểm';
+                feedback.className = 'feedback correct-feedback';
+                score++;
+                document.getElementById('scoreDisplay').textContent = `Điểm: ${score}`;
+                
+                // Tính thời gian còn lại để cộng vào tổng thời gian
+                totalTime += timeLeft;
+            } else {
+                feedback.textContent = 'Sai rồi!';
+                feedback.className = 'feedback';
+                
+                // Hiển thị đáp án đúng
+                options[question.correctAnswer].classList.add('correct');
+            }
         }
         
         // Chuyển sang câu hỏi tiếp theo
         function nextQuestion() {
-            if (selectedOption === null) {
-                alert('Vui lòng chọn một đáp án!');
-                return;
-            }
-            
-            // Kiểm tra đáp án
-            if (selectedOption === questions[currentQuestion].correctAnswer) {
-                score++;
-                document.getElementById('scoreDisplay').textContent = `Điểm: ${score}`;
-            }
-            
-            // Chuyển sang câu hỏi tiếp theo hoặc kết thúc
             currentQuestion++;
+            
             if (currentQuestion < questions.length) {
                 updateQuestion();
             } else {
-                alert(`Chúc mừng! Bạn đã hoàn thành bài quiz với ${score}/${questions.length} câu đúng!`);
-                // Reset quiz
-                currentQuestion = 0;
-                score = 0;
-                document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
-                updateQuestion();
+                finishQuiz();
             }
         }
         
-        // Khởi tạo quiz khi trang được tải
-        window.onload = updateQuestion;
+        // Kết thúc quiz
+        function finishQuiz() {
+            clearInterval(timer);
+            
+            // Thêm người chơi vào bảng xếp hạng
+            if (playerName) {
+                leaderboard.push({
+                    name: playerName,
+                    score: score,
+                    time: totalTime
+                });
+                
+                // Sắp xếp bảng xếp hạng
+                leaderboard.sort((a, b) => {
+                    if (b.score !== a.score) {
+                        return b.score - a.score; // Sắp xếp theo điểm giảm dần
+                    } else {
+                        return a.time - b.time; // Nếu điểm bằng nhau, sắp xếp theo thời gian tăng dần
+                    }
+                });
+                
+                // Giới hạn bảng xếp hạng
+                if (leaderboard.length > 10) {
+                    leaderboard = leaderboard.slice(0, 10);
+                }
+                
+                // Lưu vào localStorage
+                localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+                
+                // Cập nhật hiển thị bảng xếp hạng
+                updateLeaderboard();
+            }
+            
+            // Hiển thị kết quả
+            alert(`Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${questions.length} câu đúng!\nTổng thời gian còn lại: ${totalTime} giây`);
+            
+            // Reset quiz
+            currentQuestion = 0;
+            score = 0;
+            totalTime = 0;
+            document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
+            updateQuestion();
+        }
+        
+        // Cập nhật bảng xếp hạng
+        function updateLeaderboard() {
+            const leaderboardBody = document.getElementById('leaderboardBody');
+            leaderboardBody.innerHTML = '';
+            
+            leaderboard.forEach((player, index) => {
+                const row = document.createElement('tr');
+                
+                const rankCell = document.createElement('td');
+                rankCell.innerHTML = `<span class="rank">${index + 1}</span>`;
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = player.name;
+                
+                const scoreCell = document.createElement('td');
+                scoreCell.textContent = player.score;
+                
+                const timeCell = document.createElement('td');
+                timeCell.textContent = player.time + ' giây';
+                
+                row.appendChild(rankCell);
+                row.appendChild(nameCell);
+                row.appendChild(scoreCell);
+                row.appendChild(timeCell);
+                
+                leaderboardBody.appendChild(row);
+            });
+        }
     </script>
     
     <!-- Font Awesome cho icon mạng xã hội -->
