@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiến Thức Quân Sự Việt Nam</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Biến màu sắc */
+        :root {
+            --camouflage-green: #4A5D23;
+            --camouflage-brown: #6C5410;
+            --camouflage-dark: #2C2C2C;
+            --accent-red: #C1121F;
+            --accent-gold: #F4A261;
+            --text-light: #F8F9FA;
+        }
+        
+        body {
+            background-color: var(--camouflage-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1543351611-58f69d7c1781?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: rgba(44, 44, 44, 0.8);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+        
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20%;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-gold);
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-red);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #9e0e18;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        section {
+            margin-bottom: 4rem;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-gold);
+            text-align: center;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background-color: var(--accent-red);
+            margin: 0.5rem auto;
+        }
+        
+        /* Quiz Section */
+        .quiz-container {
+            background-color: rgba(74, 93, 35, 0.3);
+            border: 1px solid var(--camouflage-green);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .quiz-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .quiz-progress {
+            height: 10px;
+            background-color: var(--camouflage-dark);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-red);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .question-card {
+            background-color: rgba(44, 44, 44, 0.7);
+            border-left: 5px solid var(--accent-gold);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            background-color: rgba(108, 84, 16, 0.5);
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background-color: rgba(108, 84, 16, 0.8);
+            transform: translateY(-3px);
+        }
+        
+        .option.selected {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .score-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--camouflage-dark);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--camouflage-green);
+        }
+        
+        .footer-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+        
+        .social-links li {
+            margin: 0 1rem;
+        }
+        
+        .social-links a {
+            color: var(--text-light);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Quân Sự Việt Nam</div>
+            <ul class="nav-links">
+                <li><a href="#">Trang Chủ</a></li>
+                <li><a href="#">Lịch Sử</a></li>
+                <li><a href="#">Vũ Khí</a></li>
+                <li><a href="#">Câu Hỏi</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </nav>
+        
+        <div class="hero-content">
+            <h1>Kiến Thức Quân Sự</h1>
+            <p>Khám phá lịch sử hào hùng, vũ khí hiện đại và thử thách kiến thức của bạn với các câu hỏi quân sự thú vị</p>
+            <a href="#quiz" class="btn">Bắt Đầu Ngay</a>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section id="quiz">
+            <h2>Thử Thách Kiến Thức Quân Sự</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div class="quiz-progress">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <h3 id="questionCounter">Câu hỏi 1/5</h3>
+                </div>
+                
+                <div class="question-card">
+                    <div class="question-text" id="questionText">
+                        Chiến dịch Điện Biên Phủ diễn ra vào năm nào?
+                    </div>
+                    
+                    <div class="options" id="optionsContainer">
+                        <div class="option" onclick="selectOption(this)">A. 1954</div>
+                        <div class="option" onclick="selectOption(this)">B. 1945</div>
+                        <div class="option" onclick="selectOption(this)">C. 1968</div>
+                        <div class="option" onclick="selectOption(this)">D. 1975</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-footer">
+                    <div class="score-display" id="scoreDisplay">Điểm: 0</div>
+                    <button class="btn" id="nextButton" onclick="nextQuestion()">Câu Tiếp Theo</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="history">
+            <h2>Lịch Sử Quân Sự Việt Nam</h2>
+            <p>Nội dung về lịch sử quân sự sẽ được cập nhật tại đây...</p>
+        </section>
+        
+        <section id="weapons">
+            <h2>Vũ Khí & Trang Bị</h2>
+            <p>Thông tin về các loại vũ khí sẽ được hiển thị tại đây...</p>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <ul class="social-links">
+                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+            </ul>
+            <p>© 2023 Kiến Thức Quân Sự Việt Nam. Bảo lưu mọi quyền.</p>
+            <p>Website được phát triển vì mục đích giáo dục</p>
+        </div>
+    </footer>
+    
+    <script>
+        const questions = [
+            {
+                question: "Kết quả chiến dịch Điện Biên Phủ 12 ngày đêm, Việt Nam ta đã bắn rơi bao nhiêu chiếc máy bay?",
+                options: ["A. 81", "B. 34", "C. 5", "D. 42"],
+                correctAnswer: 0
+            },
+            {
+                question: "Theo ước tính của Hoa Kỳ và Thông kê của Việt Nam thì Tổng số tên lửa mà nhân dân và quân đội Việt Nam ta đã bắn lần lượt là bao nhiêu?",
+                options: ["A. 598 - 342", "B. 1000 - 334", "C. 1975 - 30", "D. 320 - 125"],
+                correctAnswer: 1
+            },
+            {
+                question: "Vào ngày đêm 18/12/1972, Ai đã là người trở thành “Tên lửa thứ 3” để bắn vào pháo đài bay B52 của địch?",
+                options: ["A. Vũ Xuân Thiều", "B. Hoàng Tam Hùng", "C. Phạm Tuân", "D. Hồ Thanh Phong"],
+                correctAnswer: 0
+            },
+            {
+                question: "Chiến dịch “Điện Biên Phủ trên không” diễn ra vào thời gian nào?",
+                options: ["A. Tháng 3 năm 1975", "B. Tháng 12 năm 1972", "C. Tháng 5 năm 1954", "D. Tháng 1 năm 1968"],
+                correctAnswer: 1
+            },
+            {
+                question: "Đối tượng chính của quân và dân ta trong chiến dịch 12 ngày đêm là lực lượng nào của Mỹ?",
+                options: ["A. Bộ binh và hải quân Mỹ", "B. Không quân chiến thuật Mỹ", "C. Pháo binh Mỹ", "D. Không quân chiến lược, đặc biệt là máy bay B-52"],
+                correctAnswer: 3
+            },
+            {
+                question: "Kết quả lớn nhất của Chiến dịch “Điện Biên Phủ trên không” là gì?",
+                options: ["A. Làm suy yếu lực lượng hải quân Mỹ", "B. Làm thay đổi chiến lược chiến tranh của Mỹ ở miền Nam", "C. Buộc Mỹ phải ký Hiệp định Paris chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam", "D. Mở rộng vùng giải phóng ở miền Nam"],
+                correctAnswer: 2
+            },
+            {
+                question: "Nội dung nào sau đây không phản ánh đúng các hoạt động phòng không nhân dân trong thời chiến?",
+                options: ["A. Tổ chức sơ tán, phân tán", "B. Tổ chức khắc phục thiệt hại, hậu quả", "C. Tổ chức đánh địch tiến công đường không", "D. Lập Ban chỉ đạo phòng không nhân dân ở cấp xã, phường"],
+                correctAnswer: 2
+            },
+            {
+                question: "Trong thời chiến, việc sơ tán, phân tán tại chỗ được áp dụng đối với:",
+                options: ["A. các khu vực có nguy cơ kẻ địch tập trung lực lượng đánh phá", "B. học sinh, sinh viên ở những vùng có nguy cơ địch tập trung bắn phá", "C. lực lượng bám trụ ở những địa bàn trọng điểm về phòng không nhân dân", "D. trẻ em, người già yếu, phụ nữ mang thai ở vùng trọng điểm phòng không"],
+                correctAnswer: 2
+            }
+        ];
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        function updateQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionText').textContent = question.question;    
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = function() { selectOption(this, index); };
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Cập nhật số câu hỏi
+            document.getElementById('questionCounter').textContent = `Câu hỏi ${currentQuestion + 1}/${questions.length}`;
+            
+            // Cập nhật thanh tiến trình
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Reset lựa chọn
+            selectedOption = null;
+        }
+        
+        // Chọn đáp án
+        function selectOption(element, index) {
+            // Bỏ chọn tất cả các option khác
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Chọn option hiện tại
+            element.classList.add('selected');
+            selectedOption = index;
+        }
+        
+        // Chuyển sang câu hỏi tiếp theo
+        function nextQuestion() {
+            if (selectedOption === null) {
+                alert('Vui lòng chọn một đáp án!');
+                return;
+            }
+            
+            // Kiểm tra đáp án
+            if (selectedOption === questions[currentQuestion].correctAnswer) {
+                score++;
+                document.getElementById('scoreDisplay').textContent = `Điểm: ${score}`;
+            }
+            
+            // Chuyển sang câu hỏi tiếp theo hoặc kết thúc
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                updateQuestion();
+            } else {
+                alert(`Chúc mừng! Bạn đã hoàn thành bài quiz với ${score}/${questions.length} câu đúng!`);
+                // Reset quiz
+                currentQuestion = 0;
+                score = 0;
+                document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
+                updateQuestion();
+            }
+        }
+        
+        // Khởi tạo quiz khi trang được tải
+        window.onload = updateQuestion;
+    </script>
+    
+    <!-- Font Awesome cho icon mạng xã hội -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
