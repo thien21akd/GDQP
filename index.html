@@ -532,7 +532,7 @@
             },
             {
                 question: "Tên của tên lửa phòng không được viện trợ cho Việt Nam là?",
-                options: ["A. Sam", "B. Sam-2", "C. Sam-3", "D. MIG-21"],
+                options: ["A. Sam", "B. Sam-2", "C. Sam-3", "D. Sam-3"],
                 correctAnswer: 1
             }
         ];
@@ -547,11 +547,12 @@
         let playerName = "";
         let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
         let availableQuestions = [...questions]; // Sao chép mảng câu hỏi để xáo trộn
+        let quizStarted = false; // Biến kiểm tra quiz đã bắt đầu chưa
         
         // Khởi tạo quiz khi trang được tải
         window.onload = function() {
             shuffleQuestions(); // Xáo trộn câu hỏi
-            updateQuestion();
+            loadQuestion(); // Tải câu hỏi nhưng chưa bắt đầu timer
             checkPlayerName();
             updateLeaderboard();
         };
@@ -571,6 +572,8 @@
                 document.getElementById('nameModal').style.display = 'block';
             } else {
                 playerName = savedName;
+                // Nếu đã có tên, cho phép bắt đầu quiz
+                startQuiz();
             }
         }
         
@@ -579,20 +582,27 @@
             document.getElementById('nameModal').style.display = 'none';
         }
         
-        // Lưu tên người chơi
+        // Lưu tên người chơi và bắt đầu quiz
         function savePlayerName() {
             const nameInput = document.getElementById('playerName').value.trim();
             if (nameInput) {
                 playerName = nameInput;
                 localStorage.setItem('quizPlayerName', playerName);
                 closeModal();
+                startQuiz(); // Bắt đầu quiz sau khi nhập tên
             } else {
                 alert('Vui lòng nhập tên của bạn!');
             }
         }
         
-        // Cập nhật câu hỏi hiện tại
-        function updateQuestion() {
+        // Bắt đầu quiz (sau khi đã nhập tên)
+        function startQuiz() {
+            quizStarted = true;
+            startTimer(); // Bắt đầu timer khi quiz đã bắt đầu
+        }
+        
+        // Tải câu hỏi (không bắt đầu timer)
+        function loadQuestion() {
             clearInterval(timer); // Dừng bộ đếm thời gian trước đó
             
             // Ẩn nút "Câu tiếp theo"
@@ -624,14 +634,19 @@
             document.getElementById('feedback').textContent = '';
             document.getElementById('feedback').className = 'feedback';
             
-            // Reset và bắt đầu bộ đếm thời gian
+            // Reset thời gian nhưng chưa bắt đầu đếm
             timeLeft = 15;
             document.getElementById('time').textContent = timeLeft;
-            startTimer();
+            
+            // Chỉ bắt đầu timer nếu quiz đã bắt đầu (đã nhập tên)
+            if (quizStarted) {
+                startTimer();
+            }
         }
         
         // Bắt đầu bộ đếm thời gian
         function startTimer() {
+            clearInterval(timer); // Đảm bảo chỉ có một timer chạy
             timer = setInterval(function() {
                 timeLeft--;
                 document.getElementById('time').textContent = timeLeft;
@@ -702,7 +717,7 @@
             currentQuestionIndex++;
             
             if (currentQuestionIndex < availableQuestions.length) {
-                updateQuestion();
+                loadQuestion();
             } else {
                 finishQuiz();
             }
@@ -750,7 +765,8 @@
             totalTime = 0;
             document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
             shuffleQuestions(); // Xáo trộn lại câu hỏi
-            updateQuestion();
+            loadQuestion();
+            quizStarted = false; // Reset trạng thái quiz
         }
         
         // Cập nhật bảng xếp hạng
