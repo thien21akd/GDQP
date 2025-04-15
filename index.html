@@ -415,7 +415,7 @@
                 
                 <div class="quiz-footer">
                     <div class="score-display" id="scoreDisplay">Điểm: 0</div>
-                    <button class="btn" id="nextButton" onclick="nextQuestion()">Câu Tiếp Theo</button>
+                    <button class="btn" id="nextButton" onclick="nextQuestion()" style="display: none;">Câu Tiếp Theo</button>
                 </div>
             </div>
             
@@ -532,13 +532,13 @@
             },
             {
                 question: "Tên của tên lửa phòng không được viện trợ cho Việt Nam là?",
-                options: ["A. Sam", "B. Sam-2", "C. Sam-3", "D. Sam-3"],
+                options: ["A. Sam", "B. Sam-2", "C. Sam-3", "D. MIG-21"],
                 correctAnswer: 1
             }
         ];
         
         // Biến toàn cục
-        let currentQuestion = 0;
+        let currentQuestionIndex = 0;
         let score = 0;
         let selectedOption = null;
         let timeLeft = 15;
@@ -546,12 +546,23 @@
         let totalTime = 0;
         let playerName = "";
         let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        let availableQuestions = [...questions]; // Sao chép mảng câu hỏi để xáo trộn
         
         // Khởi tạo quiz khi trang được tải
         window.onload = function() {
+            shuffleQuestions(); // Xáo trộn câu hỏi
             updateQuestion();
             checkPlayerName();
+            updateLeaderboard();
         };
+        
+        // Xáo trộn câu hỏi
+        function shuffleQuestions() {
+            for (let i = availableQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableQuestions[i], availableQuestions[j]] = [availableQuestions[j], availableQuestions[i]];
+            }
+        }
         
         // Kiểm tra xem người chơi đã có tên chưa
         function checkPlayerName() {
@@ -584,7 +595,10 @@
         function updateQuestion() {
             clearInterval(timer); // Dừng bộ đếm thời gian trước đó
             
-            const question = questions[currentQuestion];
+            // Ẩn nút "Câu tiếp theo"
+            document.getElementById('nextButton').style.display = 'none';
+            
+            const question = availableQuestions[currentQuestionIndex];
             document.getElementById('questionText').textContent = question.question;
             
             const optionsContainer = document.getElementById('optionsContainer');
@@ -599,10 +613,10 @@
             });
             
             // Cập nhật số câu hỏi
-            document.getElementById('questionCounter').textContent = `Câu hỏi ${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('questionCounter').textContent = `Câu hỏi ${currentQuestionIndex + 1}/${availableQuestions.length}`;
             
             // Cập nhật thanh tiến trình
-            const progress = ((currentQuestion) / questions.length) * 100;
+            const progress = ((currentQuestionIndex) / availableQuestions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
             
             // Reset lựa chọn và feedback
@@ -647,14 +661,17 @@
             
             // Bỏ chọn tất cả các option khác
             const options = document.querySelectorAll('.option');
-            options.forEach(opt => opt.classList.remove('selected', 'correct'));
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct');
+                opt.onclick = null; // Vô hiệu hóa click sau khi đã chọn
+            });
             
             // Chọn option hiện tại
             element.classList.add('selected');
             selectedOption = index;
             
             // Kiểm tra đáp án
-            const question = questions[currentQuestion];
+            const question = availableQuestions[currentQuestionIndex];
             const feedback = document.getElementById('feedback');
             
             if (index === question.correctAnswer) {
@@ -673,13 +690,18 @@
                 // Hiển thị đáp án đúng
                 options[question.correctAnswer].classList.add('correct');
             }
+            
+            // Tự động chuyển sang câu hỏi tiếp theo sau 1.5 giây
+            setTimeout(function() {
+                nextQuestion();
+            }, 1500);
         }
         
         // Chuyển sang câu hỏi tiếp theo
         function nextQuestion() {
-            currentQuestion++;
+            currentQuestionIndex++;
             
-            if (currentQuestion < questions.length) {
+            if (currentQuestionIndex < availableQuestions.length) {
                 updateQuestion();
             } else {
                 finishQuiz();
@@ -720,13 +742,14 @@
             }
             
             // Hiển thị kết quả
-            alert(`Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${questions.length} câu đúng!\nTổng thời gian còn lại: ${totalTime} giây`);
+            alert(`Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${availableQuestions.length} câu đúng!\nTổng thời gian còn lại: ${totalTime} giây`);
             
             // Reset quiz
-            currentQuestion = 0;
+            currentQuestionIndex = 0;
             score = 0;
             totalTime = 0;
             document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
+            shuffleQuestions(); // Xáo trộn lại câu hỏi
             updateQuestion();
         }
         
