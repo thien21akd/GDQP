@@ -364,6 +364,17 @@
         .close-modal:hover {
             color: var(--accent-red);
         }
+        
+        /* Completed Quiz Message */
+        .completed-message {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -389,6 +400,10 @@
     <main class="container">
         <section id="quiz">
             <h2>Thử Thách Kiến Thức Quân Sự</h2>
+            
+            <div class="completed-message" id="completedMessage">
+                Bạn đã hoàn thành bài quiz này rồi. Kết quả của bạn đã được ghi nhận vào bảng xếp hạng.
+            </div>
             
             <div class="quiz-container">
                 <div class="quiz-header">
@@ -467,7 +482,7 @@
                 <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                 <li><a href="#"><i class="fab fa-twitter"></i></a></li>
             </ul>
-            <p>© 2023 Kiến Thức Quân Sự Việt Nam. Bảo lưu mọi quyền.</p>
+            <p>© 202 Kiến Thức Quân Sự Việt Nam. Bảo lưu mọi quyền.</p>
             <p>Website được phát triển vì mục đích giáo dục</p>
         </div>
     </footer>
@@ -548,6 +563,7 @@
         let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
         let availableQuestions = [...questions]; // Sao chép mảng câu hỏi để xáo trộn
         let quizStarted = false; // Biến kiểm tra quiz đã bắt đầu chưa
+        let hasCompletedQuiz = localStorage.getItem('hasCompletedQuiz') === 'true'; // Kiểm tra đã hoàn thành quiz chưa
         
         // Khởi tạo quiz khi trang được tải
         window.onload = function() {
@@ -555,6 +571,11 @@
             loadQuestion(); // Tải câu hỏi nhưng chưa bắt đầu timer
             checkPlayerName();
             updateLeaderboard();
+            
+            // Hiển thị thông báo nếu đã hoàn thành quiz
+            if (hasCompletedQuiz) {
+                document.getElementById('completedMessage').style.display = 'block';
+            }
         };
         
         // Xáo trộn câu hỏi
@@ -597,6 +618,12 @@
         
         // Bắt đầu quiz (sau khi đã nhập tên)
         function startQuiz() {
+            // Kiểm tra nếu đã hoàn thành quiz thì không cho phép bắt đầu lại
+            if (hasCompletedQuiz) {
+                alert('Bạn đã hoàn thành bài quiz này rồi. Kết quả của bạn đã được ghi nhận vào bảng xếp hạng.');
+                return;
+            }
+            
             quizStarted = true;
             startTimer(); // Bắt đầu timer khi quiz đã bắt đầu
         }
@@ -639,7 +666,7 @@
             document.getElementById('time').textContent = timeLeft;
             
             // Chỉ bắt đầu timer nếu quiz đã bắt đầu (đã nhập tên)
-            if (quizStarted) {
+            if (quizStarted && !hasCompletedQuiz) {
                 startTimer();
             }
         }
@@ -671,6 +698,12 @@
         
         // Chọn đáp án
         function selectOption(element, index) {
+            // Kiểm tra nếu đã hoàn thành quiz thì không cho phép chọn đáp án
+            if (hasCompletedQuiz) {
+                alert('Bạn đã hoàn thành bài quiz này rồi. Không thể chơi lại.');
+                return;
+            }
+            
             // Dừng bộ đếm thời gian
             clearInterval(timer);
             
@@ -727,8 +760,8 @@
         function finishQuiz() {
             clearInterval(timer);
             
-            // Thêm người chơi vào bảng xếp hạng
-            if (playerName) {
+            // Chỉ thêm vào bảng xếp hạng nếu chưa hoàn thành quiz trước đó
+            if (!hasCompletedQuiz && playerName) {
                 leaderboard.push({
                     name: playerName,
                     score: score,
@@ -752,6 +785,13 @@
                 // Lưu vào localStorage
                 localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
                 
+                // Đánh dấu đã hoàn thành quiz
+                hasCompletedQuiz = true;
+                localStorage.setItem('hasCompletedQuiz', 'true');
+                
+                // Hiển thị thông báo đã hoàn thành
+                document.getElementById('completedMessage').style.display = 'block';
+                
                 // Cập nhật hiển thị bảng xếp hạng
                 updateLeaderboard();
             }
@@ -759,10 +799,8 @@
             // Hiển thị kết quả
             alert(`Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${availableQuestions.length} câu đúng!\nTổng thời gian còn lại: ${totalTime} giây`);
             
-            // Reset quiz
+            // Reset quiz (nhưng không cho phép chơi lại)
             currentQuestionIndex = 0;
-            score = 0;
-            totalTime = 0;
             document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
             shuffleQuestions(); // Xáo trộn lại câu hỏi
             loadQuestion();
