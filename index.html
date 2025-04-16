@@ -22,6 +22,7 @@
             --accent-gold: #F4A261;
             --text-light: #F8F9FA;
             --correct-green: #2A9D8F;
+            --incorrect-red: #E63946;
         }
         
         body {
@@ -47,6 +48,9 @@
             align-items: center;
             padding: 1rem 5%;
             background-color: rgba(44, 44, 44, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .logo {
@@ -93,11 +97,13 @@
             text-transform: uppercase;
             letter-spacing: 3px;
             color: var(--accent-gold);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         
         .hero-content p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .btn {
@@ -109,14 +115,22 @@
             border-radius: 5px;
             text-decoration: none;
             font-weight: bold;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
         .btn:hover {
             background-color: #9e0e18;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
-        /* Main Content */
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -125,6 +139,7 @@
         
         section {
             margin-bottom: 4rem;
+            scroll-margin-top: 80px;
         }
         
         h2 {
@@ -151,6 +166,11 @@
             border-radius: 10px;
             padding: 2rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .quiz-container:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
         
         .quiz-header {
@@ -170,7 +190,7 @@
             height: 100%;
             background-color: var(--accent-red);
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.5s ease-out;
         }
         
         .timer-container {
@@ -186,18 +206,35 @@
             color: var(--accent-gold);
         }
         
+        .timer.warning {
+            color: var(--accent-red);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         .question-card {
             background-color: rgba(44, 44, 44, 0.7);
             border-left: 5px solid var(--accent-gold);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border-radius: 5px;
+            transition: transform 0.3s;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-3px);
         }
         
         .question-text {
             font-size: 1.2rem;
             margin-bottom: 1rem;
             font-weight: 500;
+            line-height: 1.5;
         }
         
         .options {
@@ -218,11 +255,14 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
         }
         
         .option:hover {
             background-color: rgba(108, 84, 16, 0.8);
             transform: translateY(-3px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
         
         .option.selected {
@@ -235,15 +275,29 @@
             color: white;
         }
         
+        .option.incorrect {
+            background-color: var(--incorrect-red);
+            color: white;
+            opacity: 0.7;
+        }
+        
         .feedback {
             text-align: center;
             margin: 1rem 0;
             font-weight: bold;
             min-height: 24px;
+            padding: 0.5rem;
+            border-radius: 5px;
         }
         
         .correct-feedback {
             color: var(--correct-green);
+            background-color: rgba(42, 157, 143, 0.2);
+        }
+        
+        .incorrect-feedback {
+            color: var(--incorrect-red);
+            background-color: rgba(230, 57, 70, 0.2);
         }
         
         .quiz-footer {
@@ -256,6 +310,9 @@
         .score-display {
             font-size: 1.2rem;
             font-weight: bold;
+            background-color: rgba(244, 162, 97, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
         }
         
         /* Leaderboard Section */
@@ -282,6 +339,8 @@
         .leaderboard-table th {
             background-color: var(--camouflage-green);
             color: white;
+            position: sticky;
+            top: 0;
         }
         
         .leaderboard-table tr:nth-child(even) {
@@ -303,6 +362,7 @@
             padding: 2rem;
             text-align: center;
             border-top: 1px solid var(--camouflage-green);
+            margin-top: 2rem;
         }
         
         .footer-content p {
@@ -328,18 +388,20 @@
         
         .social-links a:hover {
             color: var(--accent-gold);
+            transform: translateY(-2px);
         }
         
         /* Modal */
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
         }
         
         .modal-content {
@@ -348,17 +410,27 @@
             padding: 2rem;
             border: 1px solid var(--accent-gold);
             border-radius: 10px;
-            width: 80%;
+            width: 90%;
             max-width: 500px;
             text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .close-modal {
             color: var(--accent-gold);
-            float: right;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s;
         }
         
         .close-modal:hover {
@@ -374,6 +446,185 @@
             margin-bottom: 1rem;
             text-align: center;
             display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .restart-btn {
+            background-color: var(--camouflage-green);
+            margin-top: 1rem;
+        }
+        
+        .restart-btn:hover {
+            background-color: #3a4a1c;
+        }
+        
+        /* CSS cho bộ sưu tập */
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .collection-card {
+            background-color: rgba(108, 84, 16, 0.7);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .collection-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .collection-card.locked {
+            filter: grayscale(100%);
+            background-color: rgba(44, 44, 44, 0.7);
+        }
+        
+        .collection-card.locked img {
+            opacity: 0.5;
+        }
+        
+        .collection-card.locked::after {
+            content: "?";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .new-card-notification {
+            background-color: var(--correct-green);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 1rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .collection-btn {
+            background-color: var(--camouflage-green);
+            margin-left: 1rem;
+        }
+        
+        /* CSS cho thử thách hàng tuần */
+        .weekly-challenge-container {
+            background-color: rgba(74, 93, 35, 0.3);
+            border: 1px solid var(--camouflage-green);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .weekly-question {
+            background-color: rgba(193, 18, 31, 0.2);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .weekly-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .weekly-option {
+            background-color: rgba(108, 84, 16, 0.5);
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .weekly-option:hover {
+            background-color: rgba(108, 84, 16, 0.8);
+        }
+        
+        .weekly-leaderboard {
+            margin-top: 1rem;
+        }
+        
+        .weekly-leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .weekly-leaderboard th, 
+        .weekly-leaderboard td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--camouflage-green);
+        }
+        
+        .weekly-leaderboard th {
+            background-color: var(--camouflage-green);
+            color: white;
+        }
+        
+        .countdown-timer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 0 10%;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .nav-links li {
+                margin: 0;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            .collection-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
         }
     </style>
 </head>
@@ -382,11 +633,10 @@
         <nav>
             <div class="logo">Quân Sự Việt Nam</div>
             <ul class="nav-links">
-                <li><a href="#">Trang Chủ</a></li>
-                <li><a href="#">Lịch Sử</a></li>
-                <li><a href="#">Vũ Khí</a></li>
-                <li><a href="#">Câu Hỏi</a></li>
-                <li><a href="#">Liên Hệ</a></li>
+                <li><a href="#quiz">Câu Hỏi</a></li>
+                <li><a href="#history">Lịch Sử</a></li>
+                <li><a href="#weapons">Vũ Khí</a></li>
+                <li><a href="#quiz">Xếp Hạng</a></li>
             </ul>
         </nav>
         
@@ -403,6 +653,7 @@
             
             <div class="completed-message" id="completedMessage">
                 Bạn đã hoàn thành bài quiz này rồi. Kết quả của bạn đã được ghi nhận vào bảng xếp hạng.
+                <button class="btn restart-btn" id="restartBtn" style="display: none;">Chơi Lại</button>
             </div>
             
             <div class="quiz-container">
@@ -412,7 +663,7 @@
                     </div>
                     <h3 id="questionCounter">Câu hỏi 1/12</h3>
                     <div class="timer-container">
-                        <div class="timer">Thời gian: <span id="time">15</span> giây</div>
+                        <div class="timer" id="timer">Thời gian: <span id="time">15</span> giây</div>
                     </div>
                 </div>
                 
@@ -430,7 +681,10 @@
                 
                 <div class="quiz-footer">
                     <div class="score-display" id="scoreDisplay">Điểm: 0</div>
-                    <button class="btn" id="nextButton" onclick="nextQuestion()" style="display: none;">Câu Tiếp Theo</button>
+                    <button class="btn" id="nextButton" style="display: none;">Câu Tiếp Theo</button>
+                    <button class="btn collection-btn" onclick="openCollectionModal()">
+                        <i class="fas fa-book"></i> Bộ Sưu Tập
+                    </button>
                 </div>
             </div>
             
@@ -451,6 +705,17 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Weekly Challenge -->
+            <div class="weekly-challenge-container" id="weeklyChallenge">
+                <h3>Thử Thách Tuần Này</h3>
+                <div id="weeklyChallengeContent">
+                    <!-- Nội dung thử thách sẽ được thêm bằng JavaScript -->
+                </div>
+                <div class="countdown-timer" id="weeklyChallengeTimer">
+                    <p>Thời gian còn lại: <span id="countdown"></span></p>
+                </div>
+            </div>
         </section>
         
         <section id="history">
@@ -470,8 +735,33 @@
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h3>Nhập Tên Của Bạn</h3>
             <p>Để tham gia bảng xếp hạng, vui lòng nhập tên của bạn:</p>
-            <input type="text" id="playerName" placeholder="Tên của bạn" style="width: 100%; padding: 0.5rem; margin: 1rem 0;">
+            <input type="text" id="playerName" placeholder="Tên của bạn" style="width: 100%; padding: 0.5rem; margin: 1rem 0; border: 1px solid var(--camouflage-green); border-radius: 5px; background-color: rgba(0,0,0,0.2); color: white;">
             <button class="btn" onclick="savePlayerName()">Lưu Tên</button>
+        </div>
+    </div>
+    
+    <!-- Collection Modal -->
+    <div id="collectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCollectionModal()">&times;</span>
+            <h3>Bộ Sưu Tập Nhân Vật Lịch Sử</h3>
+            <div class="collection-grid" id="collectionGrid">
+                <!-- Thẻ nhân vật sẽ được thêm bằng JavaScript -->
+            </div>
+            <div class="new-card-notification" id="newCardNotification" style="display: none;">
+                <p>Bạn vừa nhận được thẻ mới!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeResultModal()">&times;</span>
+            <h3 id="resultTitle">Kết Quả</h3>
+            <p id="resultMessage"></p>
+            <div id="resultDetails"></div>
+            <button class="btn" onclick="closeResultModal()">Đóng</button>
         </div>
     </div>
     
@@ -482,7 +772,7 @@
                 <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                 <li><a href="#"><i class="fab fa-twitter"></i></a></li>
             </ul>
-            <p>© 202 Kiến Thức Quân Sự Việt Nam. Bảo lưu mọi quyền.</p>
+            <p>© 2025 Kiến Thức Quân Sự Việt Nam. Bảo lưu mọi quyền.</p>
             <p>Website được phát triển vì mục đích giáo dục</p>
         </div>
     </footer>
@@ -566,6 +856,8 @@
                 correctAnswer: 0
             }
         ];
+
+        // Biến toàn cục
         let currentQuestionIndex = 0;
         let score = 0;
         let selectedOption = null;
@@ -574,23 +866,116 @@
         let totalTime = 0;
         let playerName = "";
         let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-        let availableQuestions = [...questions]; // Sao chép mảng câu hỏi để xáo trộn
-        let quizStarted = false; // Biến kiểm tra quiz đã bắt đầu chưa
-        let hasCompletedQuiz = localStorage.getItem('hasCompletedQuiz') === 'true'; // Kiểm tra đã hoàn thành quiz chưa
+        let availableQuestions = [...questions];
+        let quizStarted = false;
+        let hasCompletedQuiz = localStorage.getItem('hasCompletedQuiz') === 'true';
         
+        // Dữ liệu thẻ nhân vật
+        const historicalFigures = [
+            {
+                id: 1,
+                name: "Đại tướng Võ Nguyên Giáp",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/57/Vo_Nguyen_Giap.jpg",
+                description: "Vị tướng huyền thoại của QĐND Việt Nam, tổng tư lệnh trong chiến dịch Điện Biên Phủ",
+                rarity: "legendary",
+                unlocked: false
+            },
+            {
+                id: 2,
+                name: "Anh hùng Vũ Xuân Thiều",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Vu_Xuan_Thieu.jpg/800px-Vu_Xuan_Thieu.jpg",
+                description: "Phi công lái MiG-21, người đầu tiên bắn rơi B-52 trong trận Điện Biên Phủ trên không",
+                rarity: "epic",
+                unlocked: false
+            },
+            {
+                id: 3,
+                name: "Chủ tịch Hồ Chí Minh",
+                image: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Ho_Chi_Minh_1946.jpg",
+                description: "Lãnh tụ vĩ đại của dân tộc Việt Nam, người đặt nền móng cho quân đội nhân dân",
+                rarity: "legendary",
+                unlocked: false
+            },
+            {
+                id: 4,
+                name: "Anh hùng Phạm Tuân",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Pham_Tuan.jpg/800px-Pham_Tuan.jpg",
+                description: "Phi công Việt Nam đầu tiên bắn rơi B-52, sau trở thành phi công vũ trụ đầu tiên của Việt Nam",
+                rarity: "epic",
+                unlocked: false
+            },
+            {
+                id: 5,
+                name: "Anh hùng Nguyễn Viết Xuân",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Nguyen_Viet_Xuan.jpg/800px-Nguyen_Viet_Xuan.jpg",
+                description: "Người nổi tiếng với câu nói 'Nhằm thẳng quân thù mà bắn'",
+                rarity: "rare",
+                unlocked: false
+            },
+            {
+                id: 6,
+                name: "Anh hùng Nguyễn Văn Bảy",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Nguyen_Van_Bay.jpg/800px-Nguyen_Van_Bay.jpg",
+                description: "Phi công bắn rơi 7 máy bay Mỹ trong kháng chiến chống Mỹ",
+                rarity: "rare",
+                unlocked: false
+            },
+            {
+                id: 7,
+                name: "Anh hùng La Văn Cầu",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/La_Van_Cau.jpg/800px-La_Van_Cau.jpg",
+                description: "Người lính dũng cảm tự cưa tay mình để tiếp tục chiến đấu",
+                rarity: "rare",
+                unlocked: false
+            },
+            {
+                id: 8,
+                name: "Anh hùng Nguyễn Thị Chiên",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Nguyen_Thi_Chien.jpg/800px-Nguyen_Thi_Chien.jpg",
+                description: "Nữ du kích nổi tiếng với chiến tích bắn rơi máy bay địch",
+                rarity: "rare",
+                unlocked: false
+            }
+        ];
+
+        // Dữ liệu thử thách hàng tuần
+        const weeklyChallenges = [
+            {
+                id: 1,
+                question: "Trong chiến dịch Điện Biên Phủ, đơn vị nào được giao nhiệm vụ đánh chiếm đồi A1?",
+                options: ["Đại đoàn 390", "Đại đoàn 312", "Đại đoàn 316 và Đại đoàn 308", "Đại đoàn 304"],
+                correctAnswer: 2,
+            }
+        ];
+
+        // Biến thử thách hàng tuần
+        let currentWeeklyChallenge = null;
+        let weeklyScores = JSON.parse(localStorage.getItem('weeklyScores')) || [];
+
         // Khởi tạo quiz khi trang được tải
         window.onload = function() {
-            shuffleQuestions(); // Xáo trộn câu hỏi
-            loadQuestion(); // Tải câu hỏi nhưng chưa bắt đầu timer
+            shuffleQuestions();
+            loadQuestion();
             checkPlayerName();
             updateLeaderboard();
             
-            // Hiển thị thông báo nếu đã hoàn thành quiz
             if (hasCompletedQuiz) {
-                document.getElementById('completedMessage').style.display = 'block';
+                showCompletedMessage();
             }
+            
+            // Thêm event listener cho nút chơi lại
+            document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+            
+            // Khởi tạo thử thách hàng tuần
+            initWeeklyChallenge();
         };
-        
+
+        // Hiển thị thông báo đã hoàn thành
+        function showCompletedMessage() {
+            document.getElementById('completedMessage').style.display = 'block';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+        }
+
         // Xáo trộn câu hỏi
         function shuffleQuestions() {
             for (let i = availableQuestions.length - 1; i > 0; i--) {
@@ -598,7 +983,7 @@
                 [availableQuestions[i], availableQuestions[j]] = [availableQuestions[j], availableQuestions[i]];
             }
         }
-        
+
         // Kiểm tra xem người chơi đã có tên chưa
         function checkPlayerName() {
             const savedName = localStorage.getItem('quizPlayerName');
@@ -606,49 +991,61 @@
                 document.getElementById('nameModal').style.display = 'block';
             } else {
                 playerName = savedName;
-                // Nếu đã có tên, cho phép bắt đầu quiz
                 startQuiz();
             }
         }
-        
-        // Đóng modal
+
+        // Đóng modal nhập tên
         function closeModal() {
             document.getElementById('nameModal').style.display = 'none';
         }
-        
-        // Lưu tên người chơi và bắt đầu quiz
+
+        // Đóng modal bộ sưu tập
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').style.display = 'none';
+        }
+
+        // Đóng modal kết quả
+        function closeResultModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // Mở modal bộ sưu tập
+        function openCollectionModal() {
+            document.getElementById('collectionModal').style.display = 'block';
+            renderCollectionCards();
+        }
+
+        // Lưu tên người chơi
         function savePlayerName() {
             const nameInput = document.getElementById('playerName').value.trim();
             if (nameInput) {
                 playerName = nameInput;
                 localStorage.setItem('quizPlayerName', playerName);
                 closeModal();
-                startQuiz(); // Bắt đầu quiz sau khi nhập tên
+                startQuiz();
             } else {
                 alert('Vui lòng nhập tên của bạn!');
             }
         }
-        
-        // Bắt đầu quiz (sau khi đã nhập tên)
+
+        // Bắt đầu quiz
         function startQuiz() {
-            // Kiểm tra nếu đã hoàn thành quiz thì không cho phép bắt đầu lại
             if (hasCompletedQuiz) {
-                alert('Bạn đã hoàn thành bài quiz này rồi. Kết quả của bạn đã được ghi nhận vào bảng xếp hạng.');
                 return;
             }
             
             quizStarted = true;
-            startTimer(); // Bắt đầu timer khi quiz đã bắt đầu
+            startTimer();
         }
-        
-        // Tải câu hỏi (không bắt đầu timer)
+
+        // Tải câu hỏi
         function loadQuestion() {
-            clearInterval(timer); // Dừng bộ đếm thời gian trước đó
-            
-            // Ẩn nút "Câu tiếp theo"
+            clearInterval(timer);
             document.getElementById('nextButton').style.display = 'none';
-            
+
             const question = availableQuestions[currentQuestionIndex];
+            
             document.getElementById('questionText').textContent = question.question;
             
             const optionsContainer = document.getElementById('optionsContainer');
@@ -658,38 +1055,40 @@
                 const optionElement = document.createElement('div');
                 optionElement.className = 'option';
                 optionElement.textContent = option;
-                optionElement.onclick = function() { selectOption(this, index); };
+                optionElement.onclick = function() { 
+                    selectOption(this, index); 
+                };
                 optionsContainer.appendChild(optionElement);
             });
-            
-            // Cập nhật số câu hỏi
+
             document.getElementById('questionCounter').textContent = `Câu hỏi ${currentQuestionIndex + 1}/${availableQuestions.length}`;
             
-            // Cập nhật thanh tiến trình
             const progress = ((currentQuestionIndex) / availableQuestions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
             
-            // Reset lựa chọn và feedback
             selectedOption = null;
             document.getElementById('feedback').textContent = '';
             document.getElementById('feedback').className = 'feedback';
             
-            // Reset thời gian nhưng chưa bắt đầu đếm
             timeLeft = 15;
             document.getElementById('time').textContent = timeLeft;
+            document.getElementById('timer').className = 'timer';
             
-            // Chỉ bắt đầu timer nếu quiz đã bắt đầu (đã nhập tên)
             if (quizStarted && !hasCompletedQuiz) {
                 startTimer();
             }
         }
-        
+
         // Bắt đầu bộ đếm thời gian
         function startTimer() {
-            clearInterval(timer); // Đảm bảo chỉ có một timer chạy
+            clearInterval(timer);
             timer = setInterval(function() {
                 timeLeft--;
                 document.getElementById('time').textContent = timeLeft;
+                
+                if (timeLeft <= 5) {
+                    document.getElementById('timer').classList.add('warning');
+                }
                 
                 if (timeLeft <= 0) {
                     clearInterval(timer);
@@ -697,7 +1096,7 @@
                 }
             }, 1000);
         }
-        
+
         // Hết thời gian
         function timeOut() {
             const feedback = document.getElementById('feedback');
@@ -708,7 +1107,7 @@
                 nextQuestion();
             }, 1500);
         }
-        
+
         // Chọn đáp án
         function selectOption(element, index) {
             // Kiểm tra nếu đã hoàn thành quiz thì không cho phép chọn đáp án
@@ -723,8 +1122,8 @@
             // Bỏ chọn tất cả các option khác
             const options = document.querySelectorAll('.option');
             options.forEach(opt => {
-                opt.classList.remove('selected', 'correct');
-                opt.onclick = null; // Vô hiệu hóa click sau khi đã chọn
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.onclick = null;
             });
             
             // Chọn option hiện tại
@@ -745,8 +1144,9 @@
                 // Tính thời gian còn lại để cộng vào tổng thời gian
                 totalTime += timeLeft;
             } else {
+                element.classList.add('incorrect');
                 feedback.textContent = 'Sai rồi!';
-                feedback.className = 'feedback';
+                feedback.className = 'feedback incorrect-feedback';
                 
                 // Hiển thị đáp án đúng
                 options[question.correctAnswer].classList.add('correct');
@@ -755,9 +1155,9 @@
             // Tự động chuyển sang câu hỏi tiếp theo sau 1.5 giây
             setTimeout(function() {
                 nextQuestion();
-            }, 1500);
+            }, 2500);
         }
-        
+
         // Chuyển sang câu hỏi tiếp theo
         function nextQuestion() {
             currentQuestionIndex++;
@@ -768,7 +1168,7 @@
                 finishQuiz();
             }
         }
-        
+
         // Kết thúc quiz
         function finishQuiz() {
             clearInterval(timer);
@@ -784,9 +1184,9 @@
                 // Sắp xếp bảng xếp hạng
                 leaderboard.sort((a, b) => {
                     if (b.score !== a.score) {
-                        return b.score - a.score; // Sắp xếp theo điểm giảm dần
+                        return b.score - a.score;
                     } else {
-                        return a.time - b.time; // Nếu điểm bằng nhau, sắp xếp theo thời gian tăng dần
+                        return a.time - b.time;
                     }
                 });
                 
@@ -803,23 +1203,41 @@
                 localStorage.setItem('hasCompletedQuiz', 'true');
                 
                 // Hiển thị thông báo đã hoàn thành
-                document.getElementById('completedMessage').style.display = 'block';
+                showCompletedMessage();
                 
                 // Cập nhật hiển thị bảng xếp hạng
                 updateLeaderboard();
+                
+                // Trao thẻ nhân vật ngẫu nhiên
+                awardRandomCard();
             }
             
             // Hiển thị kết quả
-            alert(`Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${availableQuestions.length} câu đúng!\nTổng thời gian còn lại: ${totalTime} giây`);
+            showResultModal();
             
             // Reset quiz (nhưng không cho phép chơi lại)
             currentQuestionIndex = 0;
             document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
-            shuffleQuestions(); // Xáo trộn lại câu hỏi
+            shuffleQuestions();
             loadQuestion();
-            quizStarted = false; // Reset trạng thái quiz
+            quizStarted = false;
         }
-        
+
+        // Hiển thị modal kết quả
+        function showResultModal() {
+            document.getElementById('resultTitle').textContent = 'Kết Quả';
+            document.getElementById('resultMessage').textContent = 
+                `Chúc mừng ${playerName}! Bạn đã hoàn thành bài quiz với ${score}/${availableQuestions.length} câu đúng!`;
+            
+            document.getElementById('resultDetails').innerHTML = `
+                <p>Tổng điểm: <strong>${score}</strong></p>
+                <p>Tổng thời gian còn lại: <strong>${totalTime}</strong> giây</p>
+                ${hasCompletedQuiz ? '<p>Bạn đã nhận được thẻ nhân vật mới trong bộ sưu tập!</p>' : ''}
+            `;
+            
+            document.getElementById('resultModal').style.display = 'block';
+        }
+
         // Cập nhật bảng xếp hạng
         function updateLeaderboard() {
             const leaderboardBody = document.getElementById('leaderboardBody');
@@ -847,6 +1265,255 @@
                 
                 leaderboardBody.appendChild(row);
             });
+        }
+
+        // Hiển thị thẻ nhân vật
+        function renderCollectionCards() {
+            const collectionGrid = document.getElementById('collectionGrid');
+            collectionGrid.innerHTML = '';
+            
+            // Lấy dữ liệu từ localStorage
+            const collectedCards = JSON.parse(localStorage.getItem('collectedCards')) || [];
+            
+            historicalFigures.forEach(figure => {
+                const isCollected = collectedCards.some(card => card.id === figure.id);
+                const cardElement = document.createElement('div');
+                cardElement.className = `collection-card ${isCollected ? '' : 'locked'}`;
+                cardElement.innerHTML = `
+                    ${isCollected ? `<img src="${figure.image}" alt="${figure.name}">` : ''}
+                    <h4>${isCollected ? figure.name : 'Chưa mở khóa'}</h4>
+                    ${isCollected ? `<p>${figure.description}</p>` : ''}
+                `;
+                collectionGrid.appendChild(cardElement);
+            });
+        }
+
+        // Nhận thẻ ngẫu nhiên khi hoàn thành quiz
+        function awardRandomCard() {
+            const collectedCards = JSON.parse(localStorage.getItem('collectedCards')) || [];
+            const lockedCards = historicalFigures.filter(figure => 
+                !collectedCards.some(card => card.id === figure.id)
+            );
+            
+            if (lockedCards.length > 0) {
+                const randomIndex = Math.floor(Math.random() * lockedCards.length);
+                const awardedCard = lockedCards[randomIndex];
+                
+                collectedCards.push(awardedCard);
+                localStorage.setItem('collectedCards', JSON.stringify(collectedCards));
+                
+                // Hiển thị thông báo
+                const notification = document.getElementById('newCardNotification');
+                notification.style.display = 'block';
+                notification.innerHTML = `
+                    <p>Bạn vừa nhận được thẻ mới: <strong>${awardedCard.name}</strong>!</p>
+                    <img src="${awardedCard.image}" style="width: 100px; height: auto; border-radius: 5px; margin-top: 0.5rem;">
+                `;
+                
+                // Cập nhật lại bộ sưu tập
+                renderCollectionCards();
+            }
+        }
+
+        // Khởi tạo thử thách hàng tuần
+        function initWeeklyChallenge() {
+            // Lấy ngày hiện tại
+            const now = new Date();
+            const currentWeek = getWeekNumber(now);
+            
+            // Kiểm tra nếu đã có thử thách trong tuần này
+            const savedChallenge = localStorage.getItem('currentWeeklyChallenge');
+            const savedWeek = localStorage.getItem('currentWeeklyChallengeWeek');
+            
+            if (savedChallenge && savedWeek == currentWeek) {
+                currentWeeklyChallenge = JSON.parse(savedChallenge);
+            } else {
+                // Tạo thử thách mới
+                const randomIndex = Math.floor(Math.random() * weeklyChallenges.length);
+                currentWeeklyChallenge = weeklyChallenges[randomIndex];
+                localStorage.setItem('currentWeeklyChallenge', JSON.stringify(currentWeeklyChallenge));
+                localStorage.setItem('currentWeeklyChallengeWeek', currentWeek);
+                weeklyScores = []; // Reset bảng điểm
+                localStorage.setItem('weeklyScores', JSON.stringify(weeklyScores));
+            }
+            
+            renderWeeklyChallenge();
+            startCountdown();
+        }
+
+        // Hiển thị thử thách
+        function renderWeeklyChallenge() {
+            const challengeContent = document.getElementById('weeklyChallengeContent');
+            
+            if (!currentWeeklyChallenge) {
+                challengeContent.innerHTML = '<p>Chưa có thử thách tuần này. Vui lòng quay lại sau!</p>';
+                return;
+            }
+            
+            // Kiểm tra xem người chơi đã tham gia chưa
+            const playerAttempt = weeklyScores.find(score => score.name === playerName);
+            
+            if (playerAttempt) {
+                // Hiển thị kết quả đã tham gia
+                challengeContent.innerHTML = `
+                    <div class="weekly-question">
+                        <h4>${currentWeeklyChallenge.question}</h4>
+                        <p>Bạn đã tham gia thử thách này với điểm số: ${playerAttempt.score}</p>
+                        <p>${currentWeeklyChallenge.explanation}</p>
+                    </div>
+                    <div class="weekly-leaderboard">
+                        <h4>Bảng Xếp Hạng Tuần</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hạng</th>
+                                    <th>Tên</th>
+                                    <th>Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weeklyLeaderboardBody"></tbody>
+                        </table>
+                    </div>
+                `;
+                renderWeeklyLeaderboard();
+            } else {
+                // Hiển thị câu hỏi để tham gia
+                challengeContent.innerHTML = `
+                    <div class="weekly-question">
+                        <h4>${currentWeeklyChallenge.question}</h4>
+                        <div class="weekly-options" id="weeklyOptions"></div>
+                    </div>
+                `;
+                
+                const optionsContainer = document.getElementById('weeklyOptions');
+                currentWeeklyChallenge.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'weekly-option';
+                    optionElement.textContent = option;
+                    optionElement.onclick = () => checkWeeklyAnswer(index);
+                    optionsContainer.appendChild(optionElement);
+                });
+            }
+        }
+
+        // Kiểm tra đáp án thử thách
+        function checkWeeklyAnswer(selectedIndex) {
+            const isCorrect = selectedIndex === currentWeeklyChallenge.correctAnswer;
+            const score = isCorrect ? 10 : 0;
+            
+            // Lưu kết quả
+            weeklyScores.push({
+                name: playerName,
+                score: score,
+                timestamp: new Date().toISOString()
+            });
+            
+            localStorage.setItem('weeklyScores', JSON.stringify(weeklyScores));
+            
+            // Hiển thị kết quả
+            const challengeContent = document.getElementById('weeklyChallengeContent');
+            challengeContent.innerHTML = `
+                <div class="weekly-question">
+                    <h4>${currentWeeklyChallenge.question}</h4>
+                    <p>${isCorrect ? 'Chính xác! +10 điểm' : 'Sai rồi! Không sao, tuần sau thử lại nhé!'}</p>
+                    <p>${currentWeeklyChallenge.explanation}</p>
+                </div>
+                <div class="weekly-leaderboard">
+                    <h4>Bảng Xếp Hạng Tuần</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hạng</th>
+                                <th>Tên</th>
+                                <th>Điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weeklyLeaderboardBody"></tbody>
+                    </table>
+                </div>
+            `;
+            
+            renderWeeklyLeaderboard();
+        }
+
+        // Hiển thị bảng xếp hạng tuần
+        function renderWeeklyLeaderboard() {
+            const leaderboardBody = document.getElementById('weeklyLeaderboardBody');
+            if (!leaderboardBody) return;
+            
+            leaderboardBody.innerHTML = '';
+            
+            // Sắp xếp theo điểm giảm dần
+            const sortedScores = [...weeklyScores].sort((a, b) => b.score - a.score);
+            
+            sortedScores.forEach((score, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${score.name}</td>
+                    <td>${score.score}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        // Đếm ngược thời gian đến thử thách mới
+        function startCountdown() {
+            const now = new Date();
+            const nextMonday = new Date();
+            
+            // Tính ngày thứ 2 tuần sau
+            nextMonday.setDate(now.getDate() + (7 - now.getDay() + 1) % 7);
+            nextMonday.setHours(0, 0, 0, 0);
+            
+            updateCountdown();
+            
+            setInterval(updateCountdown, 1000);
+            
+            function updateCountdown() {
+                const now = new Date();
+                const diff = nextMonday - now;
+                
+                if (diff <= 0) {
+                    document.getElementById('countdown').textContent = "Thử thách mới đang được cập nhật...";
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdown').textContent = 
+                    `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+        }
+
+        // Hàm hỗ trợ lấy số tuần trong năm
+        function getWeekNumber(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+            const week1 = new Date(d.getFullYear(), 0, 4);
+            return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+
+        // Chơi lại quiz
+        function restartQuiz() {
+            // Reset trạng thái quiz
+            currentQuestionIndex = 0;
+            score = 0;
+            totalTime = 0;
+            hasCompletedQuiz = false;
+            localStorage.removeItem('hasCompletedQuiz');
+            
+            // Reset hiển thị
+            //document.getElementById('completedMessage').style.display = 'none';
+            //document.getElementById('scoreDisplay').textContent = `Điểm: 0`;
+            
+            // Xáo trộn lại câu hỏi và tải câu hỏi đầu tiên
+            //shuffleQuestions();
+            //loadQuestion();
         }
     </script>
     
